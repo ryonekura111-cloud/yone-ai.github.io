@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notes｜よね</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:rgba(255,255,255,.05);
+      --line:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.92);
+      --sub:rgba(255,255,255,.72);
+      --muted:rgba(255,255,255,.55);
+      --accent:#7dd3fc;
+      --accent2:#a78bfa;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(800px 500px at 10% 10%, rgba(125,211,252,.14), transparent 55%),
+        radial-gradient(800px 500px at 90% 15%, rgba(167,139,250,.12), transparent 55%),
+        linear-gradient(180deg,#070a14,var(--bg));
+      min-height:100vh;
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:24px 16px 80px}
+    .topbar{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+      border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:22px;padding:14px 16px;
+      position:sticky;top:10px;backdrop-filter:blur(10px);z-index:10;
+    }
+    .title h1{margin:0;font-size:18px}
+    .title p{margin:4px 0 0;color:var(--muted);font-size:12px}
+    .nav{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:8px 12px;border:1px solid var(--line);border-radius:999px;
+      color:var(--sub);text-decoration:none;background:rgba(255,255,255,.04);font-size:12px;
+    }
+    .hero,.grid{display:grid;gap:14px;margin-top:14px}
+    .hero{grid-template-columns:1.1fr .9fr}
+    .grid{grid-template-columns:380px 1fr}
+    @media (max-width: 900px){.hero,.grid{grid-template-columns:1fr}.topbar{position:static}}
+    .card{
+      border:1px solid var(--line);background:var(--card);border-radius:22px;padding:16px;
+      box-shadow:0 16px 36px rgba(0,0,0,.25);
+    }
+    h2{margin:0 0 10px;font-size:14px}
+    .lead{font-size:24px;line-height:1.4;margin:0 0 8px}
+    .sub{color:var(--sub);line-height:1.75;font-size:14px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .stat{padding:8px 10px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);font-size:12px;color:var(--sub)}
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+    input,textarea,select{
+      width:100%;border:1px solid rgba(255,255,255,.14);border-radius:14px;
+      background:rgba(0,0,0,.22);color:var(--text);padding:11px 12px;font-size:14px;outline:none;
+    }
+    textarea{min-height:120px;resize:vertical;line-height:1.7}
+    .formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:640px){.formgrid{grid-template-columns:1fr}}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{
+      border:none;border-radius:14px;padding:10px 14px;font-size:13px;cursor:pointer;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));color:#08111c;font-weight:600;
+    }
+    button.secondary{
+      background:rgba(255,255,255,.08);color:var(--text);border:1px solid rgba(255,255,255,.14)
+    }
+    .searchBox{display:grid;grid-template-columns:1fr 140px;gap:10px}
+    @media (max-width:640px){.searchBox{grid-template-columns:1fr}}
+    .list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+    .note{
+      border:1px solid var(--line);border-radius:18px;padding:14px;background:rgba(255,255,255,.04)
+    }
+    .noteTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+    .noteTitle{font-size:15px;font-weight:700}
+    .noteMeta{font-size:12px;color:var(--muted);margin-top:4px}
+    .tagRow{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+    .tag{font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);color:var(--sub);background:rgba(255,255,255,.03)}
+    .noteBody{margin-top:10px;color:var(--sub);line-height:1.75;white-space:pre-wrap;font-size:14px}
+    .hl{background:rgba(251,191,36,.22);padding:0 2px;border-radius:4px}
+    .small{font-size:12px;color:var(--muted)}
+    .empty{padding:18px;border:1px dashed var(--line);border-radius:18px;color:var(--muted);text-align:center}
+    .footer{margin-top:18px;text-align:center;color:var(--muted);font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">
+        <h1>Notes</h1>
+        <p>自分用ノート。作成・検索・絞り込み・保存。</p>
+      </div>
+      <div class="nav">
+        <a class="pill" href="./index.html">Home</a>
+        <a class="pill" href="./hf.html">HF Analysis</a>
+        <a class="pill" href="#new-note">新規ノート</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="card">
+        <p class="lead">自分の考え・日記・判断材料を、<br>あとで検索できる形で残す。</p>
+        <p class="sub">このページはブラウザ内に保存するノートページです。タイトル、本文、タグ、カテゴリで検索できます。まずは壊れにくい形で回し、必要になったらあとで外部DB化できます。</p>
+        <div class="row" style="margin-top:12px">
+          <div class="stat">ローカル保存</div>
+          <div class="stat">全文検索</div>
+          <div class="stat">タグ検索</div>
+          <div class="stat">カテゴリ絞り込み</div>
+        </div>
+      </div>
+
+      <div class="card" id="new-note">
+        <h2>新規ノート</h2>
+        <div class="formgrid">
+          <div>
+            <label for="title">タイトル</label>
+            <input id="title" placeholder="例）SRIの誤作動パターン整理" />
+          </div>
+          <div>
+            <label for="category">カテゴリ</label>
+            <select id="category">
+              <option value="日記">日記</option>
+              <option value="投資">投資</option>
+              <option value="AI">AI</option>
+              <option value="業務">業務</option>
+              <option value="アイデア">アイデア</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <label for="tags">タグ（カンマ区切り）</label>
+          <input id="tags" placeholder="例）SRI, Net Liquidity, FRED" />
+        </div>
+        <div style="margin-top:10px">
+          <label for="body">本文</label>
+          <textarea id="body" placeholder="自由に書く。後で検索する前提なので、思考の根拠や仮説も残す。"></textarea>
+        </div>
+        <div class="btns">
+          <button id="saveBtn">保存</button>
+          <button class="secondary" id="clearBtn">入力クリア</button>
+          <button class="secondary" id="exportBtn">エクスポート</button>
+        </div>
+        <div class="small" style="margin-top:10px">保存先はこのブラウザです。GitHub Pages上でも動きますが、端末ごとに保存は別です。</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>検索</h2>
+        <div class="searchBox">
+          <input id="search" placeholder="タイトル・本文・タグを検索" />
+          <select id="categoryFilter">
+            <option value="">全カテゴリ</option>
+            <option value="日記">日記</option>
+            <option value="投資">投資</option>
+            <option value="AI">AI</option>
+            <option value="業務">業務</option>
+            <option value="アイデア">アイデア</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+        <div class="btns">
+          <button class="secondary" id="resetSearchBtn">検索リセット</button>
+          <button class="secondary" id="deleteAllBtn">全削除</button>
+        </div>
+        <div class="small" style="margin-top:10px">検索対象：タイトル / 本文 / タグ</div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+          <h2>ノート一覧</h2>
+          <div class="small"><span id="count">0</span>件</div>
+        </div>
+        <div id="noteList" class="list"></div>
+      </div>
+    </div>
+
+    <div class="footer">Notes page for yone</div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'yone_notes_v1';
+    const $ = (id) => document.getElementById(id);
+
+    function nowString() {
+      const d = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function loadNotes() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function saveNotes(notes) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    }
+
+    function esc(str) {
+      return String(str || '').replace(/[&<>"']/g, (m) => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[m]));
+    }
+
+    function highlight(text, q) {
+      const safe = esc(text);
+      if (!q) return safe;
+      const terms = q.trim().split(/\s+/).filter(Boolean).map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      if (!terms.length) return safe;
+      const regex = new RegExp(`(${terms.join('|')})`, 'gi');
+      return safe.replace(regex, '<span class="hl">$1</span>');
+    }
+
+    function getFormData() {
+      return {
+        title: $('title').value.trim(),
+        category: $('category').value,
+        tags: $('tags').value.trim(),
+        body: $('body').value.trim(),
+      };
+    }
+
+    function clearForm() {
+      $('title').value = '';
+      $('category').value = '日記';
+      $('tags').value = '';
+      $('body').value = '';
+      $('saveBtn').dataset.editing = '';
+      $('title').focus();
+    }
+
+    function saveCurrentNote() {
+      const form = getFormData();
+      if (!form.title || !form.body) {
+        alert('タイトルと本文は必須です。');
+        return;
+      }
+      const notes = loadNotes();
+      const editingIndex = $('saveBtn').dataset.editing;
+      const tagArray = form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+      if (editingIndex !== '') {
+        const i = Number(editingIndex);
+        notes[i] = { ...notes[i], ...form, tagArray };
+      } else {
+        notes.push({
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+          createdAt: nowString(),
+          ...form,
+          tagArray,
+        });
+      }
+      saveNotes(notes);
+      clearForm();
+      renderNotes();
+    }
+
+    function editNote(index) {
+      const note = loadNotes()[index];
+      if (!note) return;
+      $('title').value = note.title || '';
+      $('category').value = note.category || '日記';
+      $('tags').value = note.tags || '';
+      $('body').value = note.body || '';
+      $('saveBtn').dataset.editing = String(index);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteNote(index) {
+      const notes = loadNotes();
+      notes.splice(index, 1);
+      saveNotes(notes);
+      renderNotes();
+    }
+
+    function exportNotes() {
+      const notes = loadNotes();
+      const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'notes_export.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderNotes() {
+      const q = $('search').value.trim().toLowerCase();
+      const categoryFilter = $('categoryFilter').value;
+      const noteList = $('noteList');
+      let notes = loadNotes();
+
+      notes = notes.filter(note => {
+        const hay = [note.title, note.body, note.tags, ...(note.tagArray || [])].join(' ').toLowerCase();
+        const matchesText = !q || q.split(/\s+/).every(term => hay.includes(term));
+        const matchesCategory = !categoryFilter || note.category === categoryFilter;
+        return matchesText && matchesCategory;
+      });
+
+      $('count').textContent = String(notes.length);
+      noteList.innerHTML = '';
+
+      if (!notes.length) {
+        noteList.innerHTML = '<div class="empty">まだノートがありません。保存するとここに並びます。</div>';
+        return;
+      }
+
+      const original = loadNotes();
+      notes.slice().reverse().forEach(note => {
+        const originalIndex = original.findIndex(n => n.id === note.id);
+        const div = document.createElement('div');
+        div.className = 'note';
+        div.innerHTML = `
+          <div class="noteTop">
+            <div>
+              <div class="noteTitle">${highlight(note.title, q)}</div>
+              <div class="noteMeta">${esc(note.createdAt)} ｜ ${esc(note.category)}</div>
+            </div>
+            <div class="btns" style="margin-top:0">
+              <button class="secondary" data-edit="${originalIndex}">編集</button>
+              <button class="secondary" data-del="${originalIndex}">削除</button>
+            </div>
+          </div>
+          <div class="tagRow">${(note.tagArray || []).map(tag => `<span class="tag">${highlight(tag, q)}</span>`).join('')}</div>
+          <div class="noteBody">${highlight(note.body, q)}</div>
+        `;
+        noteList.appendChild(div);
+      });
+
+      noteList.querySelectorAll('[data-edit]').forEach(btn => {
+        btn.addEventListener('click', () => editNote(Number(btn.dataset.edit)));
+      });
+      noteList.querySelectorAll('[data-del]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!confirm('このノートを削除します。OK?')) return;
+          deleteNote(Number(btn.dataset.del));
+        });
+      });
+    }
+
+    $('saveBtn').addEventListener('click', saveCurrentNote);
+    $('clearBtn').addEventListener('click', clearForm);
+    $('exportBtn').addEventListener('click', exportNotes);
+    $('search').addEventListener('input', renderNotes);
+    $('categoryFilter').addEventListener('change', renderNotes);
+    $('resetSearchBtn').addEventListener('click', () => {
+      $('search').value = '';
+      $('categoryFilter').value = '';
+      renderNotes();
+    });
+    $('deleteAllBtn').addEventListener('click', () => {
+      if (!confirm('全ノートを削除します。OK?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      renderNotes();
+    });
+
+    renderNotes();
+  </script>
+</body>
+</html>
